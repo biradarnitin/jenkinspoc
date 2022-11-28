@@ -35,7 +35,18 @@ pipeline {
         }
       }
     }
-
+    
+    stage('Scanning Image') {
+        steps {
+            sysdigImageScan engineCredentialsId: 'sysdig-secure-api-credentials', bailOnFail: false, imageName: "nitinbiradar/mydockerhub:latest"
+        }
+    } 
+    
+    stage('Dev Deploy approval'){
+      steps {
+        input "Deploy to dev-cluster?"
+      }
+    }
     stage('Deploying to Dev Kubernetes') {
       steps {
         script {
@@ -43,6 +54,12 @@ pipeline {
         }
       }
     }
+    
+    stage('Prod Deploy approval'){
+      steps {
+        input "Deploy to prod-cluster?"
+      }
+    }    
     
     stage('Deploying to Prod Kubernetes') {
       steps {
